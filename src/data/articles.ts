@@ -15,6 +15,18 @@ export const marketIndices: MarketIndex[] = [
   { symbol: 'IPCA', name: 'IPCA (Anual)', value: '3,85%', change: '+0,12%', isPositive: false }
 ];
 
+const getTodayDateString = (): string => {
+  const date = new Date();
+  const day = date.getDate();
+  const monthNames = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day} de ${month} de ${year}`;
+};
+
 export const articles: Article[] = [
   {
     id: 'tesouro-direto-2026',
@@ -22,7 +34,7 @@ export const articles: Article[] = [
     summary: 'Uma análise de especialistas sobre os títulos do Tesouro Nacional brasileiro. Entenda qual papel escolher para proteger seu poder de compra contra a inflação e garantir renda passiva de longo prazo.',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop',
     category: 'Investimentos',
-    date: '15 de Maio de 2026',
+    date: getTodayDateString(),
     author: 'André Valdetaro',
     authorRole: 'Analista de Renda Fixa & Planejador CFP®',
     readTime: '6 min de leitura',
@@ -79,7 +91,7 @@ export const articles: Article[] = [
     summary: 'Aprenda a aplicar o método de orçamento mais famoso do mundo. Adapte as diretrizes para a realidade do custo de vida atual e atinja a independência financeira sem abrir mão de viver o presente.',
     image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1200&auto=format&fit=crop',
     category: 'Orçamento',
-    date: '10 de Maio de 2026',
+    date: getTodayDateString(),
     author: 'Clarisse Silveira',
     authorRole: 'Planejadora Financeira CFP® & Escritora',
     readTime: '5 min de leitura',
@@ -127,7 +139,7 @@ export const articles: Article[] = [
     summary: 'A declaração anual de IR pode ser sua maior aliada ou sua ruína. Entenda como a escolha entre Planos Geradores de Benefício Livre (PGBL) e Vida Gerador de Benefício Livre (VGBL) altera seus impostos.',
     image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop',
     category: 'Previdência',
-    date: '02 de Maio de 2026',
+    date: getTodayDateString(),
     author: 'Maurício K. Ramos',
     authorRole: 'Consultor de Planejamento Sucessório',
     readTime: '7 min de leitura',
@@ -173,7 +185,7 @@ export const articles: Article[] = [
     summary: 'Aprenda os segredos estratégicos mantidos longe dos devedores comuns. Como negociar descontos de até 85% no rotativo do cartão e cheque especial de forma legal e inteligente.',
     image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop',
     category: 'Dívidas',
-    date: '28 de Abril de 2026',
+    date: getTodayDateString(),
     author: 'Roberta Lins',
     authorRole: 'Especialista em Recuperação de Crédito',
     readTime: '6 min de leitura',
