@@ -4,8 +4,23 @@
  */
 
 import { useState, useEffect } from 'react';
-import { motion, useScroll } from 'motion/react';
-import { ChevronLeft, Share2, Clipboard, Heart, Bookmark, Eye, ArrowRight } from 'lucide-react';
+import { motion, useScroll, AnimatePresence } from 'motion/react';
+import { 
+  ChevronLeft, 
+  Share2, 
+  Clipboard, 
+  Heart, 
+  Bookmark, 
+  Eye, 
+  ArrowRight, 
+  X, 
+  ExternalLink,
+  Linkedin,
+  Send,
+  MessageSquare,
+  Copy,
+  Check
+} from 'lucide-react';
 import { Article } from '../types';
 import { articles } from '../data/articles';
 
@@ -20,6 +35,7 @@ export default function ArticleView({ article, onBack, onSelectArticle }: Articl
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const [viewsCount, setViewsCount] = useState(148);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Scroll Progress indicator
   const { scrollYProgress } = useScroll();
@@ -36,9 +52,31 @@ export default function ArticleView({ article, onBack, onSelectArticle }: Articl
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
-      // Fallback
       alert('Link copiado!');
     });
+  };
+
+  const getShareUrl = () => {
+    return window.location.href;
+  };
+
+  const handleNativeShare = async () => {
+    const shareData = {
+      title: article.title,
+      text: article.summary,
+      url: getShareUrl(),
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('User cancelled or web share failed', err);
+      }
+    } else {
+      // Fallback: Copy link
+      handleCopyLink();
+    }
   };
 
   // Find related articles (excluding current)
@@ -201,17 +239,149 @@ export default function ArticleView({ article, onBack, onSelectArticle }: Articl
           </div>
 
           <button
-            onClick={handleCopyLink}
-            className={`p-2 border rounded-none transition-all flex items-center gap-1.5 font-mono text-xs cursor-pointer ${
-              copied ? 'bg-emerald-600 text-white border-emerald-650' : 'border-gray-200 text-gray-500 hover:border-black hover:text-black bg-white'
-            }`}
+            onClick={() => setIsShareModalOpen(true)}
+            className="p-2 border rounded-none transition-all flex items-center gap-1.5 font-mono text-xs cursor-pointer border-gray-200 text-gray-500 hover:border-black hover:text-black bg-white"
           >
-            {copied ? <Clipboard className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-            {copied ? 'Link Copiado!' : 'Compartilhar'}
+            <Share2 className="w-4 h-4" />
+            Compartilhar
           </button>
         </div>
 
       </motion.article>
+
+      {/* Share Modal overlay */}
+      <AnimatePresence>
+        {isShareModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            {/* Background overlay with fade effect */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsShareModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Card container with scale & slide effect */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="bg-white border-2 border-black p-6 w-full max-w-md shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-10 font-sans"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+                <div>
+                  <span className="font-mono text-[9px] tracking-wider text-gray-400 uppercase font-bold">Opções de Divulgação</span>
+                  <h3 className="font-serif font-bold text-xl text-[#111111] mt-0.5">Compartilhar Artigo</h3>
+                </div>
+                <button
+                  onClick={() => setIsShareModalOpen(false)}
+                  className="p-1.5 hover:bg-gray-100 border border-transparent hover:border-black transition-colors rounded-none cursor-pointer text-gray-500 hover:text-black flex items-center justify-center"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Info panel about the item */}
+              <div className="mb-5 bg-gray-50 border border-gray-200 p-3 flex flex-col gap-1">
+                <p className="font-mono text-[9px] uppercase tracking-wider text-gray-400">Título Selecionado</p>
+                <p className="font-serif text-sm font-bold text-black line-clamp-2 leading-snug">{article.title}</p>
+              </div>
+
+              {/* Share buttons Grid */}
+              <div className="space-y-3">
+                {/* Native sharing integration - highlight if supported */}
+                <button
+                  onClick={() => {
+                    handleNativeShare();
+                    setIsShareModalOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between bg-[#111111] hover:bg-black text-white font-mono text-xs font-bold p-3 transition-colors uppercase tracking-wider border border-black cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <Share2 className="w-4 h-4" /> Enviar para Contatos / Grupos
+                  </span>
+                  <span className="font-mono text-[8px] bg-white/20 px-1.5 py-0.5 rounded text-white font-normal uppercase tracking-widest">Sistema</span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {/* WhatsApp direct link */}
+                  <a
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' — Capital & Valor: ' + getShareUrl())}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 px-3 border border-gray-200 hover:border-[#25D366] hover:bg-[#25D366]/5 font-sans font-medium text-xs text-black cursor-pointer transition-all"
+                  >
+                    <svg className="w-4 h-4 text-[#25D366] fill-current shrink-0 mr-1" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.717-1.455L0 24zm6.59-4.846c1.66.986 3.288 1.498 4.76 1.499 5.379 0 9.761-4.38 9.764-9.76.002-2.607-1.01-5.059-2.85-6.902C16.42 2.146 13.968.99 11.36.99c-5.385 0-9.766 4.381-9.77 9.763-.002 2.01.524 3.975 1.522 5.713l-.997 3.644 3.738-.981zm11.23-7.534c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.774.975-.949 1.174-.175.199-.349.224-.649.075-.3-.149-1.265-.466-2.41-1.488-.891-.796-1.493-1.78-1.668-2.079-.175-.3-.019-.461.13-.61.135-.133.3-.349.45-.524.149-.174.199-.299.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.924-2.22-.243-.585-.49-.506-.674-.515-.173-.008-.373-.01-.573-.01-.2 0-.523.075-.797.373-.274.3-1.047 1.022-1.047 2.492 0 1.47 1.072 2.89 1.221 3.09.149.199 2.11 3.22 5.111 4.516.714.308 1.272.493 1.706.632.716.228 1.369.196 1.885.119.575-.085 1.772-.725 2.022-1.424.25-.699.25-1.299.175-1.424-.075-.125-.274-.199-.573-.349z" />
+                    </svg>
+                    <span className="font-semibold text-gray-800">WhatsApp</span>
+                  </a>
+
+                  {/* Telegram direct link */}
+                  <a
+                    href={`https://t.me/share/url?url=${encodeURIComponent(getShareUrl())}&text=${encodeURIComponent(article.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 px-3 border border-gray-200 hover:border-[#0088cc] hover:bg-[#0088cc]/5 font-sans font-medium text-xs text-black cursor-pointer transition-all"
+                  >
+                    <Send className="w-4 h-4 text-[#0088cc] shrink-0 mr-1" />
+                    <span className="font-semibold text-gray-800">Telegram</span>
+                  </a>
+
+                  {/* LinkedIn direct link */}
+                  <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getShareUrl())}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 px-3 border border-gray-200 hover:border-[#0077b5] hover:bg-[#0077b5]/5 font-sans font-medium text-xs text-black cursor-pointer transition-all"
+                  >
+                    <Linkedin className="w-4 h-4 text-[#0077b5] shrink-0 mr-1" />
+                    <span className="font-semibold text-gray-800">LinkedIn</span>
+                  </a>
+
+                  {/* Twitter XL logo inline SVG */}
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(getShareUrl())}&text=${encodeURIComponent('Interessante análise de educação financeira no Capital & Valor: ' + article.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 px-3 border border-gray-200 hover:border-black hover:bg-gray-50 font-sans font-medium text-xs text-black cursor-pointer transition-all"
+                  >
+                    <svg className="w-4 h-4 text-black shrink-0 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                    <span className="font-semibold text-gray-800">Twitter / X</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Copy Link field at bottom */}
+              <div className="mt-5 pt-4 border-t border-gray-200">
+                <p className="font-mono text-[9px] uppercase tracking-wider text-gray-400 mb-2">Copiar endereço direto</p>
+                <div className="flex gap-1.5">
+                  <input
+                    type="text"
+                    readOnly
+                    value={getShareUrl()}
+                    className="flex-1 font-mono text-[11px] p-2 bg-gray-50 border border-gray-200 text-gray-600 outline-none select-all"
+                  />
+                  <button
+                    onClick={handleCopyLink}
+                    className={`px-3.5 border text-xs font-mono font-bold transition-all flex items-center gap-1 cursor-pointer hover:border-black hover:text-black ${
+                      copied ? 'bg-emerald-600 border-emerald-600 text-white hover:text-white' : 'bg-white text-gray-700 border-gray-200'
+                    }`}
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? 'Copiado' : 'Copiar'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Related Content (AdSense friendly - recirculation widget) */}
       <div className="bg-gray-50 border border-gray-200 p-6 md:p-8">
