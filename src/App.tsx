@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { articles } from './data/articles';
 import Header from './components/Header';
@@ -23,6 +23,62 @@ export default function App() {
   const [activeView, setActiveView] = useState<string>('home');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+
+  // Parse initial query params on load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    const articleParam = params.get('article');
+
+    if (articleParam) {
+      const hasArticle = articles.some(a => a.id === articleParam);
+      if (hasArticle) {
+        setActiveView('home');
+        setSelectedArticleId(articleParam);
+        return;
+      }
+    }
+
+    if (viewParam) {
+      const validViews = ['home', 'calculadoras', 'sobre', 'contato', 'privacidade', 'termos'];
+      if (validViews.includes(viewParam)) {
+        setActiveView(viewParam);
+        setSelectedArticleId(null);
+      }
+    }
+  }, []);
+
+  // Synchronize state changes to URL query parameters
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedArticleId) {
+      params.set('article', selectedArticleId);
+    } else if (activeView !== 'home') {
+      params.set('view', activeView);
+    }
+    
+    const newQuery = params.toString();
+    const newRelativePathQuery = window.location.pathname + (newQuery ? `?${newQuery}` : '');
+    
+    if (window.location.search !== (newQuery ? `?${newQuery}` : '')) {
+      window.history.pushState({ activeView, selectedArticleId }, '', newRelativePathQuery);
+    }
+  }, [activeView, selectedArticleId]);
+
+  // Handle back/forward browser button interactions (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get('view') || 'home';
+      const articleParam = params.get('article');
+
+      setActiveView(viewParam);
+      setSelectedArticleId(articleParam);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Memoized filter for articles
   const filteredArticles = useMemo(() => {
