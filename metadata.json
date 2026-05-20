@@ -1,0 +1,6 @@
+{
+  "name": "Portal de Finanças e Investimentos",
+  "description": "Portal completo de educação financeira, planejamento de orçamento, investimentos e guias de organização pessoal estruturado para aprovação do Google AdSense.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
