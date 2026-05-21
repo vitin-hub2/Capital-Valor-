@@ -20,16 +20,67 @@ import {
 import { Sparkles, ArrowRight, HelpCircle, GraduationCap, Coins } from 'lucide-react';
 
 export default function App() {
-  const [activeView, setActiveView] = useState<string>('home');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  // Initialize states directly from the URL paths pattern on first render to prevent race conditions
+  const [activeView, setActiveView] = useState<string>(() => {
+    const pathname = window.location.pathname;
+    const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
+    const validViews = ['home', 'calculadoras', 'sobre', 'contato', 'privacidade', 'termos'];
+    
+    if (validViews.includes(cleanPath)) {
+      return cleanPath;
+    }
+    if (cleanPath.startsWith('artigo/')) {
+      return 'home';
+    }
+    const possibleArticleId = cleanPath === 'regra-50-30-20' ? 'regra-50-30-20-placar' : cleanPath;
+    if (articles.some(a => a.id === possibleArticleId)) {
+      return 'home';
+    }
+    
+    // Query parameters fallback for older links
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    if (viewParam && validViews.includes(viewParam)) {
+      return viewParam;
+    }
+    return 'home';
+  });
 
-  // Parse initial paths or params on load and popstate
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(() => {
+    const pathname = window.location.pathname;
+    const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
+    
+    if (cleanPath.startsWith('artigo/')) {
+      const slug = cleanPath.substring(7);
+      const articleId = slug === 'regra-50-30-20' ? 'regra-50-30-20-placar' : slug;
+      if (articles.some(a => a.id === articleId)) {
+        return articleId;
+      }
+    }
+    const possibleArticleId = cleanPath === 'regra-50-30-20' ? 'regra-50-30-20-placar' : cleanPath;
+    if (articles.some(a => a.id === possibleArticleId)) {
+      return possibleArticleId;
+    }
+
+    // Query parameters fallback for older links
+    const params = new URLSearchParams(window.location.search);
+    const articleParam = params.get('article');
+    if (articleParam) {
+      const targetId = articleParam === 'regra-50-30-20' ? 'regra-50-30-20-placar' : articleParam;
+      if (articles.some(a => a.id === targetId)) {
+        return targetId;
+      }
+    }
+    return null;
+  });
+
+  // Handle back/forward browser button interactions (popstate)
   useEffect(() => {
     const handleUrlRouting = () => {
       const pathname = window.location.pathname;
       const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
-      
       const validViews = ['home', 'calculadoras', 'sobre', 'contato', 'privacidade', 'termos'];
 
       if (!cleanPath) {
@@ -88,8 +139,6 @@ export default function App() {
       setActiveView('home');
       setSelectedArticleId(null);
     };
-
-    handleUrlRouting();
 
     window.addEventListener('popstate', handleUrlRouting);
     return () => window.removeEventListener('popstate', handleUrlRouting);
