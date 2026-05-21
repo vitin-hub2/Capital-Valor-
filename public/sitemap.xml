@@ -3,79 +3,79 @@
   <!-- Página Inicial / Feed Principal -->
   <url>
     <loc>https://capital-valor.vercel.app/</loc>
-    <lastmod>2026-05-20</lastmod>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Simuladores e Calculadoras Financeiras -->
   <url>
-    <loc>https://capital-valor.vercel.app/?view=calculadoras</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/calculadoras</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <!-- Sobre Nós / Conselho Editorial -->
   <url>
-    <loc>https://capital-valor.vercel.app/?view=sobre</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/sobre</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Contato Editorial & Comercial -->
   <url>
-    <loc>https://capital-valor.vercel.app/?view=contato</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/contato</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Polícita de Privacidade -->
+  <!-- Política de Privacidade -->
   <url>
-    <loc>https://capital-valor.vercel.app/?view=privacidade</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/privacidade</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <!-- Termos de Desobrigação e Uso -->
   <url>
-    <loc>https://capital-valor.vercel.app/?view=termos</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/termos</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <!-- Artigo: Tesouro Direto 2026 -->
   <url>
-    <loc>https://capital-valor.vercel.app/?article=tesouro-direto-2026</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/artigo/tesouro-direto-2026</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Artigo: Regra 50/30/20 -->
   <url>
-    <loc>https://capital-valor.vercel.app/?article=regra-50-30-20-placar</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/artigo/regra-50-30-20</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Artigo: Previdência PGBL vs VGBL -->
   <url>
-    <loc>https://capital-valor.vercel.app/?article=previdencia-pgbl-vgbl</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/artigo/previdencia-pgbl-vgbl</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Artigo: Como Sair das Dívidas -->
   <url>
-    <loc>https://capital-valor.vercel.app/?article=como-sair-das-dividas</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://capital-valor.vercel.app/artigo/como-sair-das-dividas</loc>
+    <lastmod>2026-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -24,61 +24,91 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
 
-  // Parse initial query params on load
+  // Parse initial paths or params on load and popstate
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get('view');
-    const articleParam = params.get('article');
+    const handleUrlRouting = () => {
+      const pathname = window.location.pathname;
+      const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
+      
+      const validViews = ['home', 'calculadoras', 'sobre', 'contato', 'privacidade', 'termos'];
 
-    if (articleParam) {
-      const hasArticle = articles.some(a => a.id === articleParam);
-      if (hasArticle) {
+      if (!cleanPath) {
         setActiveView('home');
-        setSelectedArticleId(articleParam);
+        setSelectedArticleId(null);
         return;
       }
-    }
 
-    if (viewParam) {
-      const validViews = ['home', 'calculadoras', 'sobre', 'contato', 'privacidade', 'termos'];
-      if (validViews.includes(viewParam)) {
-        setActiveView(viewParam);
-        setSelectedArticleId(null);
+      // 1. Check article paths e.g. /artigo/regra-50-30-20 or /artigo/tesouro-direto-2026
+      if (cleanPath.startsWith('artigo/')) {
+        const slug = cleanPath.substring(7);
+        const articleId = slug === 'regra-50-30-20' ? 'regra-50-30-20-placar' : slug;
+        if (articles.some(a => a.id === articleId)) {
+          setActiveView('home');
+          setSelectedArticleId(articleId);
+          return;
+        }
       }
-    }
-  }, []);
 
-  // Synchronize state changes to URL query parameters
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (selectedArticleId) {
-      params.set('article', selectedArticleId);
-    } else if (activeView !== 'home') {
-      params.set('view', activeView);
-    }
-    
-    const newQuery = params.toString();
-    const newRelativePathQuery = window.location.pathname + (newQuery ? `?${newQuery}` : '');
-    
-    if (window.location.search !== (newQuery ? `?${newQuery}` : '')) {
-      window.history.pushState({ activeView, selectedArticleId }, '', newRelativePathQuery);
-    }
-  }, [activeView, selectedArticleId]);
+      // 2. Check clear institutional views
+      if (validViews.includes(cleanPath)) {
+        setActiveView(cleanPath);
+        setSelectedArticleId(null);
+        return;
+      }
 
-  // Handle back/forward browser button interactions (popstate)
-  useEffect(() => {
-    const handlePopState = () => {
+      // 3. Check bare paths matching an article slug directly e.g. /regra-50-30-20 or /tesouro-direto-2026
+      const possibleArticleId = cleanPath === 'regra-50-30-20' ? 'regra-50-30-20-placar' : cleanPath;
+      if (articles.some(a => a.id === possibleArticleId)) {
+        setActiveView('home');
+        setSelectedArticleId(possibleArticleId);
+        return;
+      }
+
+      // 4. Backwards compatibility fallback for query params (?view= or ?article=)
       const params = new URLSearchParams(window.location.search);
-      const viewParam = params.get('view') || 'home';
+      const viewParam = params.get('view');
       const articleParam = params.get('article');
 
-      setActiveView(viewParam);
-      setSelectedArticleId(articleParam);
+      if (articleParam) {
+        const targetId = articleParam === 'regra-50-30-20' ? 'regra-50-30-20-placar' : articleParam;
+        if (articles.some(a => a.id === targetId)) {
+          setActiveView('home');
+          setSelectedArticleId(targetId);
+          return;
+        }
+      }
+
+      if (viewParam && validViews.includes(viewParam)) {
+        setActiveView(viewParam);
+        setSelectedArticleId(null);
+        return;
+      }
+
+      // Fallback
+      setActiveView('home');
+      setSelectedArticleId(null);
     };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    handleUrlRouting();
+
+    window.addEventListener('popstate', handleUrlRouting);
+    return () => window.removeEventListener('popstate', handleUrlRouting);
   }, []);
+
+  // Synchronize state changes to clean paths URLs
+  useEffect(() => {
+    let targetPath = '/';
+    if (selectedArticleId) {
+      const slug = selectedArticleId === 'regra-50-30-20-placar' ? 'regra-50-30-20' : selectedArticleId;
+      targetPath = `/artigo/${slug}`;
+    } else if (activeView !== 'home') {
+      targetPath = `/${activeView}`;
+    }
+
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({ activeView, selectedArticleId }, '', targetPath);
+    }
+  }, [activeView, selectedArticleId]);
 
   // Memoized filter for articles
   const filteredArticles = useMemo(() => {
