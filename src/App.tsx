@@ -202,15 +202,17 @@ export default function App() {
                       <p className="font-sans text-[11px] text-gray-500 mt-1 mb-4 leading-normal">
                         Preveja com precisão centavos de retorno projetando deduções regulatórias do Brasil.
                       </p>
-                      <button
-                        onClick={() => {
+                      <a
+                        href="/calculadoras"
+                        onClick={(e) => {
+                          e.preventDefault();
                           setActiveView('calculadoras');
                           window.scrollTo({ top: 300, behavior: 'smooth' });
                         }}
-                        className="w-full bg-[#111111] hover:bg-black text-white font-mono text-[10px] uppercase py-2 tracking-widest text-center cursor-pointer"
+                        className="w-full bg-[#111111] hover:bg-black text-white font-mono text-[10px] uppercase py-2 tracking-widest text-center cursor-pointer block no-underline"
                       >
                         Acessar Simulador &rarr;
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -258,7 +260,7 @@ export default function App() {
                       <span className="text-[10px] bg-white text-black font-mono font-bold tracking-widest px-2.5 py-0.5 uppercase">
                         Ferramentas Práticas
                       </span>
-                      <h3 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-white mt-4">
+                      <h3 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#111111] mt-4">
                         Organize seu orçamento familiar em menos de 2 minutos
                       </h3>
                       <p className="font-sans text-xs text-gray-400 mt-2 max-w-xl leading-relaxed">
@@ -266,15 +268,17 @@ export default function App() {
                       </p>
                     </div>
                     <div className="md:col-span-4 flex justify-end">
-                      <button
-                        onClick={() => {
+                      <a
+                        href="/calculadoras"
+                        onClick={(e) => {
+                          e.preventDefault();
                           setActiveView('calculadoras');
                           window.scrollTo({ top: 300, behavior: 'smooth' });
                         }}
-                        className="bg-white text-black hover:bg-gray-100 px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest flex items-center gap-2 w-full md:w-auto text-center justify-center cursor-pointer"
+                        className="bg-white text-black hover:bg-gray-100 px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest flex items-center gap-2 w-full md:w-auto text-center justify-center cursor-pointer block no-underline"
                       >
-                        Descobrir Simulador <ArrowRight className="w-4 h-4" />
-                      </button>
+                        Descobrir Simulador <ArrowRight className="w-4 h-4 inline" />
+                      </a>
                     </div>
                   </div>
 

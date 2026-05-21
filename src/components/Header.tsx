@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Menu, X, ArrowUpRight, ArrowDownRight, Newspaper, Percent, ShieldCheck, Mail } from 'lucide-react';
 import { marketIndices } from '../data/articles';
@@ -32,7 +32,8 @@ export default function Header({
     { id: 'contato', label: 'Fale Conosco', icon: Mail }
   ];
 
-  const handleNavClick = (viewId: string) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, viewId: string) => {
+    e.preventDefault();
     setActiveView(viewId);
     onSelectArticle(null); // Reset reading article
     setMobileMenuOpen(false);
@@ -83,12 +84,20 @@ export default function Header({
       {/* Título Principal Editorial */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo Monocromática com Letra Grande Estilo Gazeta */}
-        <div className="text-center md:text-left cursor-pointer select-none" onClick={() => handleNavClick('home')}>
+        <a 
+          href="/" 
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveView('home');
+            onSelectArticle(null);
+          }} 
+          className="text-center md:text-left cursor-pointer select-none block no-underline"
+        >
           <span className="font-mono text-xs tracking-[0.25em] uppercase text-gray-500 block mb-0.5">Educação Financeira Isenta</span>
-          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#111111] flex items-center gap-1">
+          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#111111] flex items-center justify-center md:justify-start gap-1">
             CAPITAL <span className="font-mono font-light text-xl sm:text-2xl border-x px-2 border-[#111111]">&</span> VALOR
           </h1>
-        </div>
+        </a>
 
         {/* Informações Adcionais AdSense Compliance */}
         <div className="hidden lg:flex items-center gap-6 font-mono text-xs text-gray-400">
@@ -112,11 +121,13 @@ export default function Header({
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeView === item.id;
+              const itemHref = item.id === 'home' ? '/' : `/${item.id}`;
               return (
-                <button
+                <a
                   key={item.id}
                   id={`nav-btn-${item.id}`}
-                  onClick={() => handleNavClick(item.id)}
+                  href={itemHref}
+                  onClick={(e) => handleNavClick(e, item.id)}
                   className={`flex items-center gap-2 px-4 py-2 font-mono text-xs uppercase tracking-wider transition-all duration-300 pointer-events-auto cursor-pointer ${
                     isActive
                       ? 'bg-[#111111] text-[#fafafa] font-bold'
@@ -125,7 +136,7 @@ export default function Header({
                 >
                   <Icon className="w-4 h-4" />
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </nav>
@@ -183,17 +194,19 @@ export default function Header({
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeView === item.id;
+              const itemHref = item.id === 'home' ? '/' : `/${item.id}`;
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
+                  href={itemHref}
+                  onClick={(e) => handleNavClick(e, item.id)}
                   className={`flex items-center gap-3 px-4 py-3 font-mono text-xs uppercase tracking-widest text-left w-full ${
                     isActive ? 'bg-[#111111] text-[#fafafa] font-bold' : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </div>

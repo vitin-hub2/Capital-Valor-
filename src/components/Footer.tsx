@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { ShieldCheck, Mail, FileText, Lock, ArrowUp } from 'lucide-react';
 
 interface FooterProps {
@@ -17,7 +18,8 @@ export default function Footer({
   onSelectArticle
 }: FooterProps) {
   
-  const handleFootLink = (viewId: string) => {
+  const handleFootLink = (e: React.MouseEvent<HTMLAnchorElement>, viewId: string) => {
+    e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setActiveView(viewId);
     onSelectArticle(null);
@@ -67,36 +69,40 @@ export default function Footer({
             <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-gray-300 mb-4">Institucional</h4>
             <ul className="space-y-2 font-mono text-xs text-gray-400">
               <li>
-                <button 
-                  onClick={() => handleFootLink('sobre')}
-                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left"
+                <a 
+                  href="/sobre"
+                  onClick={(e) => handleFootLink(e, 'sobre')}
+                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left block"
                 >
                   Quem Somos
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => handleFootLink('contato')}
-                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left"
+                <a 
+                  href="/contato"
+                  onClick={(e) => handleFootLink(e, 'contato')}
+                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left block"
                 >
                   Fale Conosco
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => handleFootLink('privacidade')}
-                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left"
+                <a 
+                  href="/privacidade"
+                  onClick={(e) => handleFootLink(e, 'privacidade')}
+                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left block"
                 >
                   Política de Privacidade
-                </button>
+                </a>
               </li>
               <li>
-                <button 
-                  onClick={() => handleFootLink('termos')}
-                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left"
+                <a 
+                  href="/termos"
+                  onClick={(e) => handleFootLink(e, 'termos')}
+                  className="hover:text-white transition-colors duration-200 cursor-pointer text-left block"
                 >
                   Termos de Uso
-                </button>
+                </a>
               </li>
             </ul>
           </div>

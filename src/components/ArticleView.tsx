@@ -432,28 +432,37 @@ export default function ArticleView({ article, onBack, onSelectArticle }: Articl
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {relatedArticles.map((rel) => (
-            <div
-              key={rel.id}
-              onClick={() => onSelectArticle(rel.id)}
-              className="bg-white border border-gray-200 p-4 hover:border-black cursor-pointer group flex flex-col justify-between"
-            >
-              <div>
-                <span className="font-mono text-[9px] uppercase tracking-wider text-gray-400 block mb-1">
-                  {rel.category}
-                </span>
-                <h4 className="font-serif text-base font-bold text-black group-hover:underline line-clamp-2 leading-snug">
-                  {rel.title}
-                </h4>
-              </div>
-              <div className="flex items-center justify-between font-mono text-[10px] text-gray-400 mt-4 border-t border-gray-50 pt-2">
-                <span>Por {rel.author}</span>
-                <span className="flex items-center gap-0.5 text-black font-semibold">
-                  Ler <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </div>
-            </div>
-          ))}
+          {relatedArticles.map((rel) => {
+            const relSlug = rel.id === 'regra-50-30-20-placar' ? 'regra-50-30-20' : rel.id;
+            const relUrl = `/artigo/${relSlug}`;
+            return (
+              <a
+                key={rel.id}
+                href={relUrl}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey) return;
+                  e.preventDefault();
+                  onSelectArticle(rel.id);
+                }}
+                className="bg-white border border-gray-200 p-4 hover:border-black cursor-pointer group flex flex-col justify-between block no-underline text-inherit"
+              >
+                <div>
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-gray-400 block mb-1">
+                    {rel.category}
+                  </span>
+                  <h4 className="font-serif text-base font-bold text-black group-hover:underline line-clamp-2 leading-snug text-left">
+                    {rel.title}
+                  </h4>
+                </div>
+                <div className="flex items-center justify-between font-mono text-[10px] text-gray-400 mt-4 border-t border-gray-50 pt-2">
+                  <span>Por {rel.author}</span>
+                  <span className="flex items-center gap-0.5 text-black font-semibold">
+                    Ler <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, User, Calendar } from 'lucide-react';
 import { Article } from '../types';
@@ -15,6 +16,17 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article, onSelect, isFeatured = false }: ArticleCardProps) {
   
+  const slug = article.id === 'regra-50-30-20-placar' ? 'regra-50-30-20' : article.id;
+  const articleUrl = `/artigo/${slug}`;
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey) {
+      return;
+    }
+    e.preventDefault();
+    onSelect();
+  };
+
   const cardVariants = {
     hover: {
       y: -6,
@@ -31,11 +43,12 @@ export default function ArticleCard({ article, onSelect, isFeatured = false }: A
 
   if (isFeatured) {
     return (
-      <motion.article
-        onClick={onSelect}
+      <motion.a
+        href={articleUrl}
+        onClick={handleCardClick}
         variants={cardVariants}
         whileHover="hover"
-        className="grid grid-cols-1 lg:grid-cols-12 gap-8 border-2 border-black bg-white p-6 md:p-8 cursor-pointer select-none relative group"
+        className="grid grid-cols-1 lg:grid-cols-12 gap-8 border-2 border-black bg-white p-6 md:p-8 cursor-pointer select-none relative group block no-underline text-inherit"
         id={`featured-card-${article.id}`}
       >
         {/* Absolute Ribbon for Featured tag */}
@@ -78,12 +91,12 @@ export default function ArticleCard({ article, onSelect, isFeatured = false }: A
           </div>
 
           {/* Author footer */}
-          <div className="border-t border-gray-100 pt-4 flex items-center justify-between font-mono text-xs text-gray-400">
+          <div className="border-t border-gray-100 pt-4 flex items-center justify-between font-mono text-xs text-gray-400 font-normal">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-black text-white font-serif flex items-center justify-center font-bold text-xs">
                 {article.author.charAt(0)}
               </div>
-              <div>
+              <div className="text-left">
                 <p className="text-black font-semibold">{article.author}</p>
                 <p className="text-[10px]">{article.authorRole}</p>
               </div>
@@ -91,22 +104,23 @@ export default function ArticleCard({ article, onSelect, isFeatured = false }: A
             <div className="text-right">
               <p className="text-black font-semibold">{article.date}</p>
               <p className="text-[10px] uppercase tracking-wider flex items-center gap-1 justify-end">
-                Ler Análise <BookOpen className="w-3 h-3" />
+                Ler Análise <BookOpen className="w-3.5 h-3.5" />
               </p>
             </div>
           </div>
 
         </div>
-      </motion.article>
+      </motion.a>
     );
   }
 
   return (
-    <motion.article
-      onClick={onSelect}
+    <motion.a
+      href={articleUrl}
+      onClick={handleCardClick}
       variants={cardVariants}
       whileHover="hover"
-      className="border border-gray-200 bg-white p-5 flex flex-col justify-between cursor-pointer select-none group h-full"
+      className="border border-gray-200 bg-white p-5 flex flex-col justify-between cursor-pointer select-none group h-full block no-underline text-inherit"
       id={`article-card-${article.id}`}
     >
       <div>
@@ -127,19 +141,19 @@ export default function ArticleCard({ article, onSelect, isFeatured = false }: A
         </div>
 
         {/* Category Details */}
-        <div className="flex items-center gap-2 mb-2 font-mono text-[10px]">
+        <div className="flex items-center gap-2 mb-2 font-mono text-[10px] text-left">
           <span className="text-black font-bold uppercase">{article.category}</span>
           <span className="text-gray-300">|</span>
           <span className="text-gray-400">{article.readTime}</span>
         </div>
 
         {/* Headline */}
-        <h3 className="font-serif text-lg font-bold text-[#111111] tracking-tight leading-snug mb-3 group-hover:underline">
+        <h3 className="font-serif text-lg font-bold text-[#111111] tracking-tight leading-snug mb-3 group-hover:underline text-left">
           {article.title}
         </h3>
 
         {/* Abstract */}
-        <p className="font-sans text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">
+        <p className="font-sans text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3 text-left">
           {article.summary}
         </p>
       </div>
@@ -151,6 +165,6 @@ export default function ArticleCard({ article, onSelect, isFeatured = false }: A
           Ler Artigo <BookOpen className="w-3.5 h-3.5" />
         </span>
       </div>
-    </motion.article>
+    </motion.a>
   );
 }
